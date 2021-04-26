@@ -7,7 +7,7 @@ const fs = require("fs");
 const app = express();
 const exifr = require("exifr");
 const stream = require("stream");
-const { stat } = require("fs/promises");
+const cors = require("cors");
 /*
 Enviorment-constiables
 */
@@ -19,7 +19,7 @@ const PATTERN = new RegExp(`${process.env.PATTERN}`) || new RegExp("(.*).tif.jpg
   Express settings
 */
 app.use(express.json());
-
+app.use(cors());
 /*
   Routes
 */
@@ -42,7 +42,7 @@ app.get("/structure", async (req, res) => {
 Route for getting the mata-data of an image.
 body.filepath required
 */
-app.get("/data", async (req, res) => {
+app.post("/data", async (req, res) => {
   // Check if filepath exists
   if (!req.body.filepath) {
     return res.status(400).send("Missing Parameter: filepath");
@@ -60,7 +60,7 @@ app.get("/data", async (req, res) => {
 Route for getting an image.
 body.filepath required
 */
-app.get("/image", (req, res) => {
+app.post("/image", (req, res) => {
   if (!req.body.filepath) {
     return res.status(400).send("Missing Parameter: filepath");
   }
@@ -68,22 +68,8 @@ app.get("/image", (req, res) => {
   // if () {
   //   return  res.status(400).send("Given path doesn't point to file");
   // }
-
-  // Read the file and pipe it trough to the client
-  // Found on: https://stackoverflow.com/a/56873042
-  const r = fs.createReadStream(req.body.filepath); 
-  const ps = new stream.PassThrough(); // <---- this makes a trick with stream error handling
-  stream.pipeline(
-    r,
-    ps, // <---- this makes a trick with stream error handling
-    (err) => {
-      if (err) {
-        console.log(err); // No such file or any other kind of error
-        return res.status(400).send("File not found");
-      }
-    }
-  );
-  ps.pipe(res); // <---- this makes a trick with stream error handling
+  imageBase64 = fs.readFileSync(req.body.filepath, "base64");
+  res.send(imageBase64);
 });
 
 /*

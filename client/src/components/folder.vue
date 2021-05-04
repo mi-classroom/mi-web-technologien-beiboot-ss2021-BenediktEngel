@@ -1,9 +1,13 @@
 <template>
   <span class="inline-block ml-2 text-cda-light">
-    <ChevronDownIcon class="inline-block w-5 h-5 text-cda-accent" @click="active = !active" :class="{ hidden : !active }" />
-    <ChevronUpIcon class="inline-block w-5 h-5 text-cda-accent" @click="active = !active" :class="{ hidden : active }" />
-    <FolderIcon class="inline-block w-5 h-5 mx-2 text-cda-accent"/>
-    {{ folderprops.name }}
+    <button @click="active = !active">
+      <ChevronDownIcon class="inline-block w-5 h-5 text-cda-accent" v-if="active" />
+      <ChevronUpIcon class="inline-block w-5 h-5 text-cda-accent"  v-if="!active" />
+      <FolderIcon class="inline-block w-5 h-5 mx-2 text-cda-accent"/>
+      <span v-if="active" class="sr-only">Close Folder </span>
+      <span v-if="!active" class="sr-only">Open Folder </span>
+      {{ folderprops.name }}
+    </button>
     <ul>
       <li  v-for="item in folderprops.includes"  class="pt-2" :class="{ hidden : !active }">
         <file v-if="item.type == 'file'"  :fileprops="item" :key="item.path" @file-clicked="fileClicked" />
@@ -17,7 +21,7 @@
   import file from "./file.vue";
   import { FolderIcon } from '@heroicons/vue/solid'
   import { ChevronDownIcon } from '@heroicons/vue/outline'
-   import { ChevronUpIcon } from '@heroicons/vue/outline'
+  import { ChevronUpIcon } from '@heroicons/vue/outline'
 
   export default {
     name: "folder",

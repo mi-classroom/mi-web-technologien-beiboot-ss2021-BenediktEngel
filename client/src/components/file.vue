@@ -1,6 +1,6 @@
 <template>
   <span class="inline-block ml-2 cursor-pointer text-cda-light" @click="fileClicked" :key="fileprops.path">
-      <PhotographIcon class="inline-block w-5 h-5 text-cda-accent" />
+      <PhotographIcon class="inline-block w-5 h-5 mr-2 text-cda-accent" />
       {{ fileprops.name }}
   </span>
 </template>

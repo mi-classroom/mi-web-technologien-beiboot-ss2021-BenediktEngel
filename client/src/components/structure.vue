@@ -5,8 +5,8 @@
     </h2>
     <ul v-for="item in tree">
       <li>
-        <folder v-if="item.type='folder'" :key="item.path" :folderprops="item" :depth="0" @file-clicked="fileClicked"/>
-        <file v-else :fileprops="item" :key="item.path" :depth="0" @file-clicked="fileClicked"></file>
+        <folder v-if="item.type='folder'" :key="item.path" :folderprops="item" @file-clicked="fileClicked"/>
+        <file v-else :fileprops="item" :key="item.path" @file-clicked="fileClicked"></file>
       </li>
     </ul>
   </div>

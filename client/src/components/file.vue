@@ -1,5 +1,5 @@
 <template>
-  <span :class="indent" class="inline-block text-cda-light" @click="fileClicked" :key="fileprops.path">
+  <span class="inline-block ml-2 cursor-pointer text-cda-light" @click="fileClicked" :key="fileprops.path">
       <PhotographIcon class="inline-block w-5 h-5 text-cda-accent" />
       {{ fileprops.name }}
   </span>
@@ -21,22 +21,11 @@
         type: Object,
         required: true
       },
-      depth:
-      {
-        type: Number,
-        required: true
-      },
     },
     methods:
     {
       fileClicked(){
         this.$emit("file-clicked", this.fileprops.path)
-      }
-    },
-    computed:
-    {
-      indent(){
-      return "pl-" + (this.depth*2)
       }
     }
   }

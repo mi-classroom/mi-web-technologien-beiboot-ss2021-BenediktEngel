@@ -5,7 +5,8 @@ module.exports = {
     colors: {
       cda: {
         darkest: "#333333",
-        dark: "#666666",
+        darker: "#666666",
+        dark: "#9C9C9C",
         light: "#E5E5E5",
         lightest: "#FFFFFF",
         accent: "#FFCC00",

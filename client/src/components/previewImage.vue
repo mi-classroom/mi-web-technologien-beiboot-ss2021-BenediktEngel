@@ -1,8 +1,5 @@
 <template>
-  <div class="flex flex-col items-center px-4">
-    <h2 class="mt-6 mb-4 text-2xl text-center text-cda-light">
-      Image
-    </h2>
+  <div class="flex flex-col items-center px-4 pt-4">
     <img :src="image" />
   </div>
 </template>
@@ -31,7 +28,7 @@
       getImage(){
         this.axios({method: 'post',url: import.meta.env.VITE_APP_SERVER +'/image',data: {filepath: this.path}})
         .then((response) => {this.image = 'data:image/*;base64,' + response.data})
-      },
+      }
     }
   }
 </script>

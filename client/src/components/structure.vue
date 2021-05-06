@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h2 class="mt-6 mb-4 text-2xl text-center text-cda-light">
-      Files
+    <h2 class="pl-6 mt-6 mb-6 text-2xl text-cda-light">
+      Filetree
     </h2>
-    <ul v-for="item in tree">
-      <li>
-        <folder v-if="item.type='folder'" :key="item.path" :folderprops="item" :depth="0" @file-clicked="fileClicked"/>
-        <file v-else :fileprops="item" :key="item.path" :depth="0" @file-clicked="fileClicked"></file>
+    <ul>
+      <li v-for="item in tree" class="pt-2">
+        <folder v-if="item.type == 'directory'" :key="item.path" :folderprops="item" @file-clicked="fileClicked"/>
+        <file v-else :fileprops="item" :key="item.path" @file-clicked="fileClicked"></file>
       </li>
     </ul>
   </div>

@@ -13,5 +13,5 @@ To start the client read the [README-file](./client/README.md).
 
 ### ...with docker compose
 
-1. Run `docker compose up`.
+1. Run `docker compose up`. If the code has changed use also the flag `--build`.
 2. Navigate to [http://localhost:5000](http://localhost:5000).

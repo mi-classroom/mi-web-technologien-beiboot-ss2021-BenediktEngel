@@ -1,11 +1,8 @@
 <template>
   <div>
-    <h2 class="pl-6 mt-6 mb-6 text-2xl text-cda-light">
-      Filetree
-    </h2>
     <ul>
       <li v-for="item in tree" class="pt-2">
-        <folder v-if="item.type == 'directory'" :key="item.path" :folderprops="item" @file-clicked="fileClicked"/>
+        <folder v-if="item.type == 'directory'" :key="item.path" :folderprops="item" @file-clicked="fileClicked" />
         <file v-else :fileprops="item" :key="item.path" @file-clicked="fileClicked"></file>
       </li>
     </ul>
@@ -18,29 +15,28 @@
 
   export default {
     name: "structure",
-    components:
-    {
+    components: {
       folder,
       file
     },
-    data(){
+    data() {
       return {
         tree: ""
       }
     },
-    methods:
-    {
-      getTree(){
-        this.axios.get(import.meta.env.VITE_APP_SERVER + "/structure")
-        .then((response) => {
-        this.tree = response.data
-        })
+    methods: {
+      getTree() {
+        this.axios.get(
+            import.meta.env.VITE_APP_SERVER + "/structure")
+          .then((response) => {
+            this.tree = response.data
+          })
       },
-      fileClicked(path){
+      fileClicked(path) {
         this.$emit("file-clicked", path)
       }
     },
-    created(){
+    created() {
       this.getTree();
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center px-4 pt-4">
-    <img :src="image" />
+    <img :src="image" class="w-10/12" />
   </div>
 </template>
 

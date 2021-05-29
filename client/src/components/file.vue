@@ -1,5 +1,5 @@
 <template>
-  <button class="inline-block ml-2 text-left text-cda-light" @click="fileClicked" :key="fileprops.path">
+  <button class="inline-block pr-2 ml-2 text-left break-all text-cda-light" @click="fileClicked" :key="fileprops.path">
       <PhotographIcon class="inline-block w-5 h-5 mr-2 text-cda-accent" />
       <span class="sr-only">Select File </span>
       {{ fileprops.name }}

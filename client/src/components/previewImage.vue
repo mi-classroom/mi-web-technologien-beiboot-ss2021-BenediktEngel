@@ -29,6 +29,9 @@
         this.axios({method: 'post',url: import.meta.env.VITE_APP_SERVER +'/image',data: {filepath: this.path}})
         .then((response) => {this.image = 'data:image/*;base64,' + response.data})
       }
+    },
+    created() {
+      this.getImage();
     }
   }
 </script>

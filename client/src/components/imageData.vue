@@ -41,6 +41,9 @@
         this.imagedata = response.data
         })
       }
+    },
+    created() {
+      this.getData();
     }
   }
 </script>

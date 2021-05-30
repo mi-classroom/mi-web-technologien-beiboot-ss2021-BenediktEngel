@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-For searching the files and folders an algorithem is needed.
+For searching the files and folders an algorithm is needed.
 
 ### Options
 

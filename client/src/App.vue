@@ -64,7 +64,6 @@
     methods: {
       fileClicked(path) {
         this.clickedFile = path
-        console.log(path)
       }
     }
   }

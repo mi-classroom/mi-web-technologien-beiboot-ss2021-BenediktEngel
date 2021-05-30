@@ -6,6 +6,8 @@ Als organisatorischen Rahmen für das Projekt nutzen wir GitHub Classroom. Inhal
 
 ## How to use...
 
+No matter how you run the application, the `./data` folder must be created and the images-folders must be added before starting. 
+
 ### ...manually
 
 To start the server read the [README-file](./server/README.md).
@@ -13,5 +15,10 @@ To start the client read the [README-file](./client/README.md).
 
 ### ...with docker compose
 
-1. Run `docker compose up`.
+1. Run `docker compose up`. If the code has changed use also the flag `--build`.
 2. Navigate to [http://localhost:5000](http://localhost:5000).
+
+## Timetracker
+- Issue 1: 10h
+- Issue 2: 2,5h
+- Issue 3: 10h

@@ -1,14 +1,20 @@
 <template>
   <div>
     <div class="pr-2 ml-6">
-      <button @click="toggleActive" class="flex text-left break-all text-cda-light">
-        <ChevronDownIcon class="flex-shrink-0 w-5 h-5 text-cda-accent" v-show="active" />
-        <ChevronUpIcon class="flex-shrink-0 w-5 h-5 text-cda-accent" v-show="!active" />
-        <FolderIcon class="flex-shrink-0 w-5 h-5 mx-1 text-cda-accent" />
-        <span v-if="active" class="sr-only">Close Folder </span>
-        <span v-else class="sr-only">Open Folder </span>
-        <span>{{ folderprops.name }}</span>
-      </button>
+      <div class="flex">
+        <button @click="toggleActive" class="flex text-left break-all text-cda-light">
+          <ChevronDownIcon class="flex-shrink-0 w-5 h-5 text-cda-accent" v-show="active" />
+          <ChevronUpIcon class="flex-shrink-0 w-5 h-5 text-cda-accent" v-show="!active" />
+          <FolderIcon class="flex-shrink-0 w-5 h-5 mx-1 text-cda-accent" />
+          <span v-if="active" class="sr-only">Close Folder </span>
+          <span v-else class="sr-only">Open Folder </span>
+          <span>{{ folderprops.name }}</span>
+        </button>
+        <button v-if="folderprops.json" @click="$emit('file-clicked', folderprops.json)">
+          <span class="sr-only">Show folder information</span>
+          <InformationCircleIcon class="flex-shrink-0 w-5 h-5 ml-1 flex-sh text-cda-accent" />
+        </button>
+      </div>
       <ul>
         <li v-for="item in folderprops.includes" class="pt-2" v-if="active">
           <file
@@ -26,7 +32,7 @@
 
 <script>
 import file from "./file.vue";
-import { FolderIcon } from "@heroicons/vue/solid";
+import { FolderIcon, InformationCircleIcon } from "@heroicons/vue/solid";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/vue/outline";
 import { ref } from "vue";
 
@@ -42,6 +48,7 @@ export default {
     FolderIcon,
     ChevronDownIcon,
     ChevronUpIcon,
+    InformationCircleIcon,
   },
   emits: ["file-clicked"],
   setup() {

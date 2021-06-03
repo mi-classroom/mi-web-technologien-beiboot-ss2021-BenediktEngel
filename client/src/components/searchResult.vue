@@ -55,7 +55,7 @@ export default {
     let results = [];
     watch(
       () => props.search,
-      (newSearch, oldSearch) => {
+      (newSearch) => {
         if (results.length > 0) {
           results.splice(0, results.length);
         }

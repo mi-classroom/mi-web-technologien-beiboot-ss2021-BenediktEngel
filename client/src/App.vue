@@ -20,7 +20,7 @@
               v-model="search"
               name="search"
               id="search"
-              class="block w-5/6 h-8 pl-10 rounded-sm text-cda-darker border-cda-darker bg-cda-light focus:ring-cda-accent focus:border-cda-accent sm:text-sm"
+              class="block w-5/6 h-8 pl-10 rounded-sm  text-cda-darker border-cda-darker bg-cda-light focus:ring-cda-accent focus:border-cda-accent sm:text-sm"
               placeholder="Search the tree"
             />
           </div>
@@ -62,7 +62,7 @@ export default {
   },
   setup() {
     let clickedFile = ref("");
-    let search = "";
+    let search = ref("");
     function clicked(path) {
       clickedFile.value = path;
     }

@@ -1,36 +1,35 @@
 <template>
-  <button class="inline-block pr-2 ml-2 text-left break-all text-cda-light" @click="fileClicked" :key="fileprops.path">
-      <PhotographIcon class="inline-block w-5 h-5 mr-2 text-cda-accent" />
+  <div>
+    <button
+      class="flex pr-2 ml-12 text-left break-all text-cda-light"
+      @click="$emit('file-clicked', fileprops.path)"
+      :key="fileprops.path"
+    >
+      <PhotographIcon class="flex-shrink-0 w-5 h-5 mr-1 text-cda-accent" />
       <span class="sr-only">Select File </span>
-      {{ fileprops.name }}
-  </button>
+      <span>{{ fileprops.name }}</span>
+    </button>
+  </div>
 </template>
 
 <script>
-  import { PhotographIcon } from '@heroicons/vue/solid'
+import { PhotographIcon } from "@heroicons/vue/solid";
 
-  export default {
-    name: "file",
-    components:
-    {
-      PhotographIcon
+export default {
+  props: {
+    fileprops: {
+      type: Object,
+      required: true,
     },
-    props:
-    {
-      fileprops:
-      {
-        type: Object,
-        required: true
-      },
-    },
-    methods:
-    {
-      fileClicked(){
-        this.$emit("file-clicked", this.fileprops.path)
-      }
-    }
-  }
+  },
+  components: {
+    PhotographIcon,
+  },
+  emits: ["file-clicked"],
+  setup() {
+    return {};
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>

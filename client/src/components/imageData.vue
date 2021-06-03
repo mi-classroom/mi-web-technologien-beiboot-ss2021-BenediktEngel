@@ -1,10 +1,10 @@
 <template>
   <div class="px-6">
     <div class="mt-5">
-      <dl class="sm:divide-y sm:divide-gray-200" v-for="item, key in imagedata.data">
+      <dl class="sm:divide-y sm:divide-gray-200" v-for="(item, key) in imageData.data">
         <div class="grid grid-cols-3 gap-4 py-2">
           <dt class="font-bold text-cda-dark">
-            {{ key  }}
+            {{ key }}
           </dt>
           <dd class="col-span-2 font-medium text-cda-light">
             {{ item }}
@@ -16,37 +16,32 @@
 </template>
 
 <script>
-  export default {
-    name: "imageData",
-    data(){
-      return {
-        imagedata: ""
+import { getCurrentInstance } from "@vue/runtime-core";
+import { ref, watch } from "vue";
+export default {
+  props: {
+    path: {
+      type: String,
+    },
+  },
+  setup(props) {
+    const axios = getCurrentInstance().appContext.config.globalProperties.axios;
+    let imageData = ref([]);
+    getData(props.path);
+    watch(
+      () => props.path,
+      (newPath) => {
+        getData(newPath);
       }
-    },
-    props:
-    {
-      path: {
-        type: String,
-      }
-    },
-    watch:
-    {
-      path: 'getData'
-    },
-    methods:
-    {
-      getData(){
-        this.axios({method: 'post',url: import.meta.env.VITE_APP_SERVER +'/data',data: {filepath: this.path}})
-        .then((response) => {
-        this.imagedata = response.data
-        })
-      }
-    },
-    created() {
-      this.getData();
+    );
+    function getData(path) {
+      axios.post(import.meta.env.VITE_APP_SERVER + "/data", { filepath: path }).then((response) => {
+        imageData.value = response.data;
+      });
     }
-  }
+    return { imageData };
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>

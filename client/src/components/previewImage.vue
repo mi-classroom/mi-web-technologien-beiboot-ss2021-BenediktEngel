@@ -5,36 +5,32 @@
 </template>
 
 <script>
-  export default {
-    name: "previewImage",
-    data(){
-      return {
-        image: ""
+import { getCurrentInstance } from "@vue/runtime-core";
+import { ref, watch } from "vue";
+export default {
+  props: {
+    path: {
+      type: String,
+    },
+  },
+  setup(props) {
+    const axios = getCurrentInstance().appContext.config.globalProperties.axios;
+    let image = ref("");
+    getImage(props.path);
+    watch(
+      () => props.path,
+      (newPath) => {
+        getImage(newPath);
       }
-    },
-    props:
-    {
-      path:
-      {
-        type: String,
-      }
-    },
-    watch:
-    {
-      path: 'getImage'
-    },
-    methods:
-    {
-      getImage(){
-        this.axios({method: 'post',url: import.meta.env.VITE_APP_SERVER +'/image',data: {filepath: this.path}})
-        .then((response) => {this.image = 'data:image/*;base64,' + response.data})
-      }
-    },
-    created() {
-      this.getImage();
+    );
+    function getImage(path) {
+      axios.post(import.meta.env.VITE_APP_SERVER + "/image", { filepath: path }).then((response) => {
+        image.value = "data:image/*;base64," + response.data;
+      });
     }
-  }
+    return { image };
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>

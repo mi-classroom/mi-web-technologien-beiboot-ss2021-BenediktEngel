@@ -6,11 +6,13 @@
         {{ folderData.folder }}
       </span>
     </h2>
-    <ul v-if="folderData.data" class="px-8 pt-20 pb-10">
-      <li v-for="(item, key) in folderData.data.imageStack">
-        <dataList :element="item" :name="key" open="true" />
-      </li>
-    </ul>
+    <div class="h-screen pt-20 pb-32 overflow-y-scroll">
+      <ul v-if="folderData.data" class="px-8">
+        <li v-for="(item, key) in folderData.data.imageStack">
+          <dataList :element="item" :name="key" open="true" />
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-y-scroll">
+  <div class="h-screen pb-32 overflow-y-scroll">
     <ul v-if="imageData.data" class="px-8">
       <li v-for="(item, key) in imageData.data">
         <dataList :element="item" :name="key" open="true" />

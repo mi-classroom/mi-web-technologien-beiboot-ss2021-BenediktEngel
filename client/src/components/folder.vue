@@ -1,58 +1,64 @@
 <template>
-  <span class="inline-block pr-2 ml-2 break-all text-cda-light">
-    <button @click="active = !active">
-      <ChevronDownIcon class="inline-block w-5 h-5 text-cda-accent" v-show="active" />
-      <ChevronUpIcon class="inline-block w-5 h-5 text-cda-accent"  v-show="!active" />
-      <FolderIcon class="inline-block w-5 h-5 mx-2 text-cda-accent"/>
-      <span v-show="active" class="sr-only">Close Folder </span>
-      <span v-show="!active" class="sr-only">Open Folder </span>
-      {{ folderprops.name }}
-    </button>
-    <ul>
-      <li  v-for="item in folderprops.includes"  class="pt-2" v-if="active">
-        <file v-if="item.type == 'file'"  :fileprops="item" :key="item.path" @file-clicked="fileClicked" />
-        <folder v-else :folderprops="item" :key="item.path" @file-clicked="fileClicked"/>
-      </li>
-    </ul>
-  </span>
+  <div>
+    <div class="pr-2 ml-6">
+      <div class="flex">
+        <button @click="toggleActive" class="flex text-left break-all text-cda-light">
+          <ChevronDownIcon class="flex-shrink-0 w-5 h-5 text-cda-accent" v-show="active" />
+          <ChevronUpIcon class="flex-shrink-0 w-5 h-5 text-cda-accent" v-show="!active" />
+          <FolderIcon class="flex-shrink-0 w-5 h-5 mx-1 text-cda-accent" />
+          <span v-if="active" class="sr-only">Close Folder </span>
+          <span v-else class="sr-only">Open Folder </span>
+          <span>{{ folderprops.name }}</span>
+        </button>
+        <button v-if="folderprops.json" @click="$emit('file-clicked', folderprops.json)">
+          <span class="sr-only">Show folder information</span>
+          <InformationCircleIcon class="flex-shrink-0 w-5 h-5 ml-1 flex-sh text-cda-accent" />
+        </button>
+      </div>
+      <ul>
+        <li v-for="item in folderprops.includes" class="pt-2" v-if="active">
+          <file
+            v-if="item.type == 'file'"
+            :fileprops="item"
+            :key="item.path"
+            @file-clicked="$emit('file-clicked', $event)"
+          />
+          <folder v-else :folderprops="item" :key="item.path" @file-clicked="$emit('file-clicked', $event)" />
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
-  import file from "./file.vue";
-  import { FolderIcon } from '@heroicons/vue/solid'
-  import { ChevronDownIcon } from '@heroicons/vue/outline'
-  import { ChevronUpIcon } from '@heroicons/vue/outline'
+import file from "./file.vue";
+import { FolderIcon, InformationCircleIcon } from "@heroicons/vue/solid";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/vue/outline";
+import { ref } from "vue";
 
-  export default {
-    name: "folder",
-    components:
-    {
-      file,
-      FolderIcon,
-      ChevronDownIcon,
-      ChevronUpIcon
+export default {
+  props: {
+    folderprops: {
+      type: Object,
+      required: true,
     },
-    data(){
-      return {
-        active: false
-      }
-    },
-    props:
-    {
-      folderprops:
-      {
-        type: Object,
-        required: true
-      },
-    },
-    methods:
-    {
-      fileClicked(path){
-        this.$emit("file-clicked", path)
-      }
+  },
+  components: {
+    file,
+    FolderIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+    InformationCircleIcon,
+  },
+  emits: ["file-clicked"],
+  setup() {
+    let active = ref(false);
+    function toggleActive() {
+      active.value = !active.value;
     }
-  }
+    return { active, toggleActive };
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>

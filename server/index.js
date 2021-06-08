@@ -14,7 +14,7 @@ Enviorment-constiables
 const FILE_DIRECTORY = process.env.FILE_DIRECTORY || "../data";
 const PORT = process.env.PORT || 8000;
 const PATTERN = new RegExp(`${process.env.PATTERN}`) || new RegExp("(.*).tif.jpg$");
-
+const JSONPATTERN = new RegExp(".json$", "i");
 /*
   Express settings
 */
@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 Route for getting the directory- and file-tree.
 */
 app.get("/structure", async (req, res) => {
-  res.send(getTree(FILE_DIRECTORY));
+  res.send(await getTree(FILE_DIRECTORY));
 });
 
 /*
@@ -73,6 +73,23 @@ app.post("/image", (req, res) => {
 });
 
 /*
+Route for getting the Json.
+body.filepath required
+*/
+app.post("/json", (req, res) => {
+  if (!req.body.filepath) {
+    return res.status(400).send("Missing Parameter: filepath");
+  }
+  // TODO: Check if filepath points to file
+  // if () {
+  //   return  res.status(400).send("Given path doesn't point to file");
+  // }
+  let folder = req.body.filepath.substring(0, req.body.filepath.lastIndexOf("/") + 1);
+  let data = JSON.parse(fs.readFileSync(req.body.filepath));
+  res.send({ data, folder });
+});
+
+/*
   Start the Server
 */
 app.listen(PORT, () => {
@@ -94,7 +111,9 @@ function getTree(startpath) {
         // If item is directory call getTree() with the new path and push the results in tree
         const type = "directory";
         const includes = getTree(path);
-        tree.push({ name, path, type, includes });
+        const json = searchJson(path);
+
+        tree.push({ name, path, type, includes, json });
       } else {
         // Item is a file, check if the filename matches the given pattern, if true push the item in tree
         const type = "file";
@@ -106,4 +125,13 @@ function getTree(startpath) {
     // If error occurs return empty array
     return [];
   }
+}
+
+//Search Json-file in given path
+function searchJson(thepath) {
+  try {
+    const found = fs.readdirSync(thepath);
+    const jsonFiles = found.filter((item) => JSONPATTERN.test(item));
+    if (jsonFiles.length > 0) return thepath + "/" + jsonFiles[jsonFiles.length - 1];
+  } catch (e) {}
 }

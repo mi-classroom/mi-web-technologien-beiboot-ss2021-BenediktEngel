@@ -5,9 +5,10 @@ require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const app = express();
-const exifr = require("exifr");
-const stream = require("stream");
 const cors = require("cors");
+const exiftool = require('node-exiftool')
+const exiftoolBin = require('dist-exiftool')
+const ep = new exiftool.ExiftoolProcess(exiftoolBin)
 /*
 Enviorment-constiables
 */
@@ -15,6 +16,8 @@ const FILE_DIRECTORY = process.env.FILE_DIRECTORY || "../data";
 const PORT = process.env.PORT || 8000;
 const PATTERN = new RegExp(`${process.env.PATTERN}`) || new RegExp("(.*).tif.jpg$");
 const JSONPATTERN = new RegExp(".json$", "i");
+const FIELDS = JSON.parse(process.env.FIELDS);
+
 /*
   Express settings
 */
@@ -27,8 +30,11 @@ app.get("/", (req, res) => {
   res.send(`
     Hello from server! Possible routes: <br/>
      - GET /structure (Returns the directory- & file-tree)<br/>
-     - GET /data with body.filepath (Returns Exif & IPTC data for the given path)<br/>
-     - GET /image with body.filepath (Returns the image for the given path)`);
+     - POST /data with body.filepath (Returns IPTC data for the given path)<br/>
+     - POST /image with body.filepath (Returns the image for the given path)<br/>
+     - POST /json with body.filepath (Returns JSON-File at the given path)<br/>
+     - PUT /data with body.filepath & body.data (Safes the IPTC data  for the given path)<br/>
+  `);
 });
 
 /*
@@ -52,8 +58,33 @@ app.post("/data", async (req, res) => {
   //   return  res.status(400).send("Given path doesn't point to file");
   // }
   const filepath = req.body.filepath;
+  let output;
+  await ep.open()
+          .then((pid) => console.log('Started exiftool process %s', pid))
+          .then(() => ep.readMetadata(filepath, ['-File:all']))
+          .then((resp) => output = resp.data)
+          .then(() => ep.close())
+          .then(() => console.log('Closed exiftool'))
+          .catch(console.error);
+  let imageData = [];
   // Parse meta-data and send it back
-  exifr.parse(req.body.filepath, true).then((data) => res.send({ filepath, data }));
+  FIELDS.forEach(el => {
+    imageData.push({
+      field: el.field,
+      label: el.label,
+      data: output && output[0][el.field] ? output[0][el.field] : "",
+      type: el.type, 
+      write: el.write,
+      multilang: el.multilang,
+      maxChars: el.maxChars
+    })
+  })
+  console.log(imageData)
+
+  res.send({
+    filepath,
+    imageData
+  })
 });
 
 /*
@@ -86,8 +117,24 @@ app.post("/json", (req, res) => {
   // }
   let folder = req.body.filepath.substring(0, req.body.filepath.lastIndexOf("/") + 1);
   let data = JSON.parse(fs.readFileSync(req.body.filepath));
-  res.send({ data, folder });
+  res.send({
+    data,
+    folder
+  });
 });
+
+app.put("/data", async (req, res) => {
+  if(!req.body.filepath || !req.body.data){
+    return res.status(400).send("Missing Parameter: filepath and/or data");
+  }
+  ep.open()
+    .then(() => ep.writeMetadata(req.body.filepath, {all: '', ...req.body.data}, ['overwrite_original']))
+    .then(console.log, console.error)
+    .then(() => ep.close())
+    .then(res.status(200).send())
+    .catch((err) => res.status(400).send(err));
+  
+})
 
 /*
   Start the Server
@@ -103,7 +150,9 @@ function getTree(startpath) {
   const tree = [];
   try {
     // Read all files and directorys in startpath
-    const found = fs.readdirSync(startpath, { withFileTypes: true });
+    const found = fs.readdirSync(startpath, {
+      withFileTypes: true
+    });
     found.forEach((item) => {
       const path = startpath + "/" + item.name;
       const name = item.name;
@@ -113,11 +162,21 @@ function getTree(startpath) {
         const includes = getTree(path);
         const json = searchJson(path);
 
-        tree.push({ name, path, type, includes, json });
+        tree.push({
+          name,
+          path,
+          type,
+          includes,
+          json
+        });
       } else {
         // Item is a file, check if the filename matches the given pattern, if true push the item in tree
         const type = "file";
-        if (PATTERN.test(name)) tree.push({ name, path, type });
+        if (PATTERN.test(name)) tree.push({
+          name,
+          path,
+          type
+        });
       }
     });
     return tree;

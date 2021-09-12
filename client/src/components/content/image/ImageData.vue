@@ -1,16 +1,13 @@
 <template>
-  <div 
-    class="h-screen pb-32 overflow-y-scroll"
-  >
+  <div class="pr-4">
     <form 
       v-if="imageData.length" 
-      class="px-8"
     >
       <div 
         v-for="(item) in imageData" 
         class="grid grid-cols-2 gap-4"
       >
-        <inputImageData 
+        <InputImageData 
           :type="item.type" 
           :label="item.label" 
           :dataDe="item.data.de" 
@@ -23,18 +20,20 @@
         />
       </div> 
       <button 
-        class="bg-cda-accent text-cda-darkest px-4 py-2" 
+        class="bg-cda-accent text-cda-darkest px-4 py-2 rounded-s" 
         type="submit" 
         @click.prevent="saveData()"
       >
-        Speichern
+        <FloppyDiscIcon class="inline mr-2" />
+        <span class="align-middle">Speichern</span>
       </button>
       <button 
-        class="ml-4 bg-cda-accent text-cda-darkest px-4 py-2" 
+        class="ml-4 bg-cda-accent text-cda-darkest px-4 py-2 rounded-s" 
         type="reset" 
-        @click.prevent="reset()"
+        @click.prevent="$emit('reset')"
       >
-        Abbrechen
+        <XIcon class=" h-4 w-4 inline mr-2" />
+        <span class="align-middle">Abbrechen</span>
       </button>
       <div 
         v-if="message.text != ''" 
@@ -56,7 +55,10 @@
 <script>
 import { getCurrentInstance } from "@vue/runtime-core";
 import { ref, watch } from "vue";
-import inputImageData from "./inputImageData.vue";
+import InputImageData from "./InputImageData.vue";
+import { FloppyDiscIcon } from '@iconicicons/vue3'
+import { XIcon } from '@heroicons/vue/outline'
+
 
 export default {
   props: {
@@ -65,7 +67,9 @@ export default {
     },
   },
   components: { 
-    inputImageData 
+    InputImageData, 
+    FloppyDiscIcon,
+    XIcon
   },
   setup(props) {
     const axios = getCurrentInstance().appContext.config.globalProperties.axios;
@@ -123,10 +127,6 @@ export default {
       }
     }
 
-    function reset(){
-      // TODO: Reset the values
-    }
-
     function setNewValue(prop){
       // Check if field value exists
       let index = newValues.value.findIndex(el => el.field === prop.field && el.lang === prop.lang);
@@ -138,7 +138,7 @@ export default {
         newValues.value.push(prop);
       }
     }
-    return { imageData, saveData, reset, message, setNewValue };
+    return { imageData, saveData, message, setNewValue };
   },
 };
 </script>

@@ -38,9 +38,9 @@
 
 <script>
 import { getCurrentInstance } from "@vue/runtime-core";
-import file from "./file.vue";
-import folder from "./folder.vue";
-import searchResult from "./searchResult.vue";
+import file from "../file.vue";
+import folder from "../folder.vue";
+import searchResult from "../searchResult.vue";
 import { ref } from "vue";
 
 export default {

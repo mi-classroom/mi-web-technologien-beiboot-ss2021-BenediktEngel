@@ -10,6 +10,7 @@
   "author": "Benedikt Engel",
   "license": "MIT",
   "dependencies": {
+    "archiver": "^5.3.0",
     "cors": "^2.8.5",
     "dist-exiftool": "^10.53.0",
     "dotenv": "^8.2.0",

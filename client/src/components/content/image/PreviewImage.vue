@@ -19,6 +19,7 @@ import { getCurrentInstance } from "@vue/runtime-core";
 import { ref, watch } from "vue";
 
 import ImageButtonGroup from "./ImageButtonGroup.vue"
+
 export default {
   props: {
     path: {
@@ -31,24 +32,27 @@ export default {
   setup(props) {
     const axios = getCurrentInstance().appContext.config.globalProperties.axios;
     let image = ref("");
+
     getImage(props.path);
+
     watch(
       () => props.path,
       (newPath) => {
         getImage(newPath);
       }
     );
+
     function getImage(path) {
       axios.post(import.meta.env.VITE_APP_SERVER + "/image", { filepath: path }).then((response) => {
         image.value = "data:image/*;base64," + response.data;
       });
     }
+
     function notImplemented(){
       alert("Diese Funktion ist noch nicht implementiert!")
     }
+
     return { image, notImplemented };
   },
 };
 </script>
-
-<style></style>

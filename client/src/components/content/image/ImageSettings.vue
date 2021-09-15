@@ -1,42 +1,43 @@
 <template>
   <div class="bg-cda-dark px-4 py-6">
     <div>
-      <div class="text-cda-lighter ">
-        <PhotographIcon class="h-4 w-4 inline-block" />
-        <span class="pl-2">Größe: {{imageProps.width}}x{{imageProps.height}}</span>
+      <div class="text-cda-lighter">
+        <MaterialIcon classes="" name="crop_16_9" />
+        <span class="ml-2 align-top">Größe: {{ imageProps.width }}x{{ imageProps.height }}</span>
       </div>
       <button @click.prevent="toggleShowData">
-        <AdjustmentsIcon class="h-4 w-4 text-cda-accent rotate-90 transform inline-block" />
-        <span class="sr-only">Zeige </span>
-        <span class="text-cda-lighter pl-2">IPTC: -</span>
-        <span class="sr-only">-Daten</span>
+        <MaterialIcon classes="text-cda-accent" name="list" />
+        <span class="sr-only">Zeige IPTC-Daten</span>
+        <span class="text-cda-lighter ml-2 align-top" aria-hidden>IPTC: -</span>
       </button>
     </div>
-    <ImageData v-if="showData" :path="imageProps.clickedFile" @reset="toggleShowData" class="overflow-scroll max-h-96 scrollbar-thin scrollbar-thumb-cda-darker mt-6" />
+    <ImageData
+      v-if="showData"
+      :path="imageProps.path"
+      @reset="toggleShowData"
+      class="overflow-scroll max-h-96 scrollbar-thin scrollbar-thumb-cda-darker mt-6"
+    />
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
 
-import { AdjustmentsIcon } from "@heroicons/vue/solid";
-import { PhotographIcon } from "@heroicons/vue/outline";
 import ImageData from "./ImageData.vue";
+import MaterialIcon from "../../MaterialIcon.vue";
 
 export default {
   props: {
-    imageProps: Object
+    imageProps: Object,
   },
-  components: {
-    AdjustmentsIcon,
-    PhotographIcon,
-    ImageData
-  },
+  components: { ImageData, MaterialIcon },
   setup(props) {
     let showData = ref(false);
+
     function toggleShowData() {
       showData.value = !showData.value;
     }
+    
     return { showData, toggleShowData };
   },
 };

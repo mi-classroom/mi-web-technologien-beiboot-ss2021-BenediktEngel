@@ -1,103 +1,81 @@
 <template>
   <div class="pb-5">
-    <div class="pb-8 -pt-2">
-      <p v-if="folderProps.subFolders !== 0" class="leading-normal text-cda-light pt-2">
-        <FolderIcon class="w-4 h-4 pointer-events-none inline" />
-        <span class="align-middle pl-2">
-          <span v-if="folderProps.subFolders > 1">
-            {{ folderProps.subFolders }} Verzeichnisse
-          </span>
-          <span v-else>
-            {{ folderProps.subFolders }} Verzeichnis
-          </span>
-          gefunden
-        </span>
+    <div class="pb-8 -pt-2 text-cda-light">
+      <p v-if="folderProps.subfolders !== 0" class="pt-2">
+        <MaterialIcon classes="align-bottom pr-2" name="folder_open" />
+        {{ folderProps.subfolders }} {{ folderProps.subfolders >= 1 ? "Verzeichnisse" : "Verzeichnis" }} gefunden
       </p>
-      <p v-if="folderProps.images !== 0" class="leading-normal text-cda-light pt-2">
-        <PhotographIcon class="w-4 h-4 pointer-events-none inline" />
-        <span class="align-middle pl-2">
-          <span v-if="folderProps.images > 1">
-            {{ folderProps.images }} Bilder
-          </span>
-          <span v-else>
-            {{ folderProps.images }} Bild
-          </span>
-          gefunden
-        </span>
+      <p v-if="folderProps.images !== 0" class="pt-2">
+        <MaterialIcon classes="align-bottom pr-2" name="image" />
+        {{ folderProps.images }} {{ folderProps.images >= 1 ? "Bilder" : "Bild" }} gefunden
       </p>
     </div>
-    <p class="leading-normal text-cda-lighter pb-2">
-      <LocationMarkerIcon class="w-4 h-4 pointer-events-none inline" />
-      <span class="align-middle pl-2">
-        {{folderProps.name}}
-      </span>
+    <p class="text-cda-lighter pb-2">
+      <MaterialIcon classes="pr-2 align-bottom" name="place" />
+      {{ folderProps.name }}
     </p>
-    <button 
-      class="leading-normal text-cda-light" 
-      @click.prevent="download(folderprops)"
+    <button
+      class="leading-normal text-cda-light hover:text-cda-accent"
+      @click.prevent="download(folderProps)"
       :disabled="downloadLoading"
     >
-      <DownloadIcon class="w-4 h-4 pointer-events-none inline focus:ring-offset-cda-medium focus:ring-2" />
-      <span class="align-middle pl-2">
-        Download folder
-        <span class="sr-only">{{folderProps.name}}</span>
-      </span>
+      <MaterialIcon classes="pr-2 align-bottom" name="download" />
+      Download folder
+      <span class="sr-only">{{ folderProps.name }}</span>
     </button>
     <span v-if="error !== ''" class="text-cda-error pl-2" @click="error = ''">
-      <ExclamationIcon class="w-4 h-4 pointer-events-none inline" />
+      <MaterialIcon classes="align-bottom" name="error" />
       {{ error }}
     </span>
   </div>
 </template>
 
 <script>
-import { getCurrentInstance } from "@vue/runtime-core"
+import { getCurrentInstance } from "@vue/runtime-core";
 import { ref } from "vue";
 
-import { LocationMarkerIcon, PhotographIcon, DownloadIcon, ExclamationIcon } from "@heroicons/vue/solid";
-import { FolderIcon } from "@heroicons/vue/outline";
+import MaterialIcon from "../MaterialIcon.vue";
 
 export default {
   props: {
-    folderProps: Object
+    folderProps: {
+      subfolders: Number,
+      images: Number,
+      name: String,
+      path: String,
+    },
   },
-  components: {
-    LocationMarkerIcon,
-    PhotographIcon,
-    DownloadIcon,
-    ExclamationIcon,
-    FolderIcon
-  },
+  components: { MaterialIcon },
   setup(props) {
     const axios = getCurrentInstance().appContext.config.globalProperties.axios;
+
     let downloadLoading = ref(false);
     let error = ref("");
+
     async function download(prop) {
       error.value = "";
       downloadLoading.value = true;
       try {
-        axios.post(
-          import.meta.env.VITE_APP_SERVER + "/download", 
-          { filepath: prop.path }, 
-          {responseType: 'arraybuffer'})
-        .then(response => {
-          //create blob with response
-          let blob = new Blob([response.data], { type: 'application/zip' }),
-          url = window.URL.createObjectURL(blob)
-          // create a-tag / taken from: https://stackoverflow.com/questions/19327749/javascript-blob-filename-without-link
-          var a = document.createElement("a");
-          a.href = url;
-          a.download = `${prop.name}.zip`;
-          document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-          a.click();
-          a.remove();
-        })
-      } catch (err){
-        error.value = "Download fehlgeschlagen!"
+        axios
+          .post(import.meta.env.VITE_APP_SERVER + "/download", { filepath: prop.path }, { responseType: "arraybuffer" })
+          .then((response) => {
+            //create blob with response
+            let blob = new Blob([response.data], { type: "application/zip" }),
+              url = window.URL.createObjectURL(blob);
+            // create a-tag / taken from: https://stackoverflow.com/questions/19327749/javascript-blob-filename-without-link
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = `${prop.name}.zip`;
+            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+            a.click();
+            a.remove();
+          });
+      } catch (err) {
+        error.value = "Download fehlgeschlagen!";
       }
-       downloadLoading.value = false;
+      downloadLoading.value = false;
     }
-    return {download, downloadLoading, error};
+    return { download, downloadLoading, error };
   },
 };
 </script>

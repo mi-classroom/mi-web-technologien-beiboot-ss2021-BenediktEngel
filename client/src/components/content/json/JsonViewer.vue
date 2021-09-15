@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h2 class="sr-only">Folderdata for {{ folderData.folder }}</h2>
+    <h2 class="sr-only">Ordnerdaten für {{ folderData.folder }}</h2>
     <div class="h-screen pt-10 pb-32 mr-2 overflow-y-scroll scrollbar-thumb-cda-light scrollbar-thin">
       <ul v-if="folderData.data" class="px-8">
-        <span class="material-icons text-cda-lightest transform rotate-90 align-middle"> arrow_right </span>
-        <span class="text-cda-accent font-code">{</span>
+        <MaterialIcon classes="text-cda-lightest transform rotate-90 align-top" name="arrow_right" />
+        <span class="text-cda-accent font-code" aria-hidden>{</span>
         <li v-for="(item, key) in folderData.data" class="flex">
           <ViewerItem
             :element="item"
@@ -13,7 +13,7 @@
             class="ml-7 border-l border-dotted border-cda-lighten_strong"
           />
         </li>
-        <span class="text-cda-light pl-6 font-code">}</span>
+        <span class="text-cda-light pl-6 font-code" aria-hidden>}</span>
       </ul>
     </div>
   </div>
@@ -24,6 +24,7 @@ import { getCurrentInstance } from "@vue/runtime-core";
 import { ref, watch } from "vue";
 
 import ViewerItem from "./ViewerItem.vue";
+import MaterialIcon from "../../MaterialIcon.vue";
 
 export default {
   props: {
@@ -32,7 +33,7 @@ export default {
       required: true,
     },
   },
-  components: { ViewerItem },
+  components: { ViewerItem, MaterialIcon },
   setup(props) {
     const axios = getCurrentInstance().appContext.config.globalProperties.axios;
     let folderData = ref([]);

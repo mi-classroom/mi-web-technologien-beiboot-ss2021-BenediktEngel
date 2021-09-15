@@ -12,18 +12,20 @@ export default {
   props: {
     active: Boolean,
     element: [String, Number, Object],
-    opening: Boolean, 
-    color: String
+    opening: Boolean,
+    color: String,
   },
   components: {},
   setup(props) {
-     function isObject(el) {
+    function isObject(el) {
       return typeof el === "object" && !Array.isArray(el);
     }
+
     function isArray(el) {
       return Array.isArray(el);
     }
-    return {isObject, isArray};
+
+    return { isObject, isArray };
   },
 };
 </script>

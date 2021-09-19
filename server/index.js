@@ -31,7 +31,7 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.send(`
     Hello from server! Possible routes: <br/>
-     - GET /structure (Returns the directory- & file-tree)<br/>
+     - POST /structure (Returns the directory- & file-tree)<br/>
      - POST /data with body.filepath (Returns IPTC data for the given path)<br/>
      - POST /image with body.filepath (Returns the image for the given path)<br/>
      - POST /json with body.filepath (Returns JSON-File at the given path)<br/>
@@ -42,8 +42,14 @@ app.get("/", (req, res) => {
 /*
 Route for getting the directory- and file-tree.
 */
-app.get("/structure", async (req, res) => {
-  res.send(await getTree(FILE_DIRECTORY));
+app.post("/structure", async (req, res) => {
+  let path = FILE_DIRECTORY;
+  if (req.body.filepath === undefined) {
+    return res.status(400).send("Missing Parameter: filepath");
+  } else if(req.body.filepath !== ""){
+    path = req.body.filepath;
+  }
+  res.send({filepath: path, structure: await getTree(path)});
 });
 
 /*

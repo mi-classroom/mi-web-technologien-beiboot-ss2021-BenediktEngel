@@ -9,6 +9,8 @@ const cors = require("cors");
 const exiftool = require('node-exiftool')
 const exiftoolBin = require('dist-exiftool')
 const ep = new exiftool.ExiftoolProcess(exiftoolBin)
+const archiver = require("archiver");
+
 /*
 Enviorment-constiables
 */
@@ -136,6 +138,14 @@ app.put("/data", async (req, res) => {
   
 })
 
+app.post("/download", async (req, res) =>{
+  if (req.body.filepath === undefined) {
+    res.status(400).send("Fehlender Parameter: filepath");
+  }
+    await zipDirectory(req.body.filepath, "./download/folder.zip");
+    res.download("./download/folder.zip");
+})
+
 /*
   Start the Server
 */
@@ -193,4 +203,20 @@ function searchJson(thepath) {
     const jsonFiles = found.filter((item) => JSONPATTERN.test(item));
     if (jsonFiles.length > 0) return thepath + "/" + jsonFiles[jsonFiles.length - 1];
   } catch (e) {}
+}
+
+//Zip the given folder
+async function zipDirectory(source, out) {
+  const archive = archiver("zip", { zlib: { level: 9 } });
+  const stream = fs.createWriteStream(out);
+
+  return new Promise((resolve, reject) => {
+    archive
+      .directory(source, false)
+      .on("error", (err) => reject(err))
+      .pipe(stream);
+
+    stream.on("close", () => resolve());
+    archive.finalize();
+  });
 }

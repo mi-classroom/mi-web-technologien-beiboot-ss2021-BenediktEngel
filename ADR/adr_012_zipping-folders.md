@@ -1,4 +1,4 @@
-# ADR - Search
+# ADR - Zipping
 
 ## Status
 
